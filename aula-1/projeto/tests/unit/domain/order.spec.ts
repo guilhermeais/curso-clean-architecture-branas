@@ -1,6 +1,6 @@
-import { DiscountCoupon } from '../../src/domain/entities/discount-coupon'
-import Order, { OrderProps } from '../../src/domain/entities/order'
-import { Product } from '../../src/domain/entities/product'
+import { DiscountCoupon } from '../../../src/domain/entities/discount-coupon'
+import Order, { OrderProps } from '../../../src/domain/entities/order'
+import { Product } from '../../../src/domain/entities/product'
 
 describe('Order', () => {
   function makeProduct() {
