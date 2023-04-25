@@ -40,16 +40,16 @@ export default class Order {
     return this._id
   }
 
-  addProduct(product: Product) {
-    this._products.push(new Product(product))
+  addProduct(...product: Product[]) {
+    this._products = [...this._products, ...product]
   }
 
   removeProduct(id: string) {
     this._products = this._products.filter(product => product.id !== id)
   }
   
-  applyDiscountCoupon(coupon: DiscountCoupon) {
-    this._discountCoupons.push(coupon)
+  applyDiscountCoupon(...coupon: DiscountCoupon[]) {
+    this._discountCoupons = [...this._discountCoupons, ...coupon]
   }
 
   removeDiscountCoupon(id: string) {
