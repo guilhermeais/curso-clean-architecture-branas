@@ -1,0 +1,38 @@
+if / else's
+magic numbers
+linhas em branco
+nomes ruins
+comentários
+código morto
+tratamento de erros inadequados
+
+1 - nomes:
+* Renomear variáveis, funções, classes e arquivos
+para nomes mais descritivos;
+
+2 - linhas em branco dentro de funções ou método
+
+3 - comentários e código morto
+
+4 - if / else complexo
+
+* consolidar comandos condicionais
+* introdução de cláusula guarda
+* introduzir ternário
+
+6 - magic numbers
+
+* introduzir constantes ou variáveis explicativas
+
+7 - tratamento de erros inadequados
+
+* introduzir tratamento de erros adequado
+
+8 - longa lista de parâmetros
+
+* introduzir objeto de parâmetro
+* introduzindo objetos
+
+9 - Classes grandes 
+
+* mover métodos (utilizar conceitos de design)
