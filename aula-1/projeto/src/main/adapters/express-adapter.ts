@@ -9,20 +9,30 @@ import { Server } from 'http'
 import { Controller } from '../../application/controller/controller'
 
 export class ExpressRouterAdapter {
-  private app: Application
+  private _app: Application
   private router: Router
   private server: Server
 
   constructor() {
     this.router = express.Router()
-    this.app = express()
-    this.server = new Server(this.app)
+    this._app = express()
+    this._app.use(express.json())
+    this._app.use(this.router)
+    this.server = new Server(this._app)
+  }
+
+  get app () {
+    return this._app
   }
 
   public post(path: string, controller: Controller): void {
     this.router.post(path, async (req: Request, res: Response) => {
-      const response = await controller.handle(req.body)
-      res.status(200).json(response)
+      try {
+        const response = await controller.handle(req.body)
+        return res.status(201).json(response)
+      } catch (error: Error | any) {
+        return res.status(400).json({ error: error?.message })
+      }
     })
   }
 
@@ -48,8 +58,6 @@ export class ExpressRouterAdapter {
   }
 
   public listen(port: number, callback: () => void): Server {
-    this.app.use(express.json())
-    this.app.use(this.router)
     return this.server.listen(port, callback)
   }
 
