@@ -3,11 +3,12 @@ import Order from '../../domain/entities/order'
 import { Product } from '../../domain/entities/product'
 import { CreateOrder } from '../use-cases/create-order'
 import { Controller } from './controller'
+import { OrderViewModel, OrderViewModelProps } from './view-models/oder-view-model'
 
-export class OrdersController implements Controller<CreateOrderRequest, Order> {
+export class OrdersController implements Controller<CreateOrderRequest, OrderViewModelProps> {
   constructor(private createOrder: CreateOrder) {}
 
-  async handle(orderRequest: CreateOrderRequest): Promise<Order> {
+  async handle(orderRequest: CreateOrderRequest): Promise<OrderViewModelProps> {
     const order = new Order({
       cpf: orderRequest.cpf,
       products: orderRequest.products,
@@ -17,7 +18,7 @@ export class OrdersController implements Controller<CreateOrderRequest, Order> {
 
     await this.createOrder.execute({ order })
 
-    return order
+    return OrderViewModel.toViewModel(order)
   }
 }
 
