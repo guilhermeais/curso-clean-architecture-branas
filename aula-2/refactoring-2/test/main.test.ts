@@ -1,10 +1,11 @@
-import { validate } from "../src/main";
+import { validate } from "../src/validateCPF";
 
 
 test.each([
   "042.759.630-08",
   "587.099.304-00",
   "746.971.314-01",
+  "74697131401",
 ])(`Deve testar se o cpf é vaĺido %s`, (cpf) => {
   const isValid = validate(cpf)
   expect(isValid).toBeTruthy();
