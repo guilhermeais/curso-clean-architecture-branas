@@ -9,9 +9,11 @@ export default class Order {
   private _discountCoupons: DiscountCoupon[] = []
   description?: string
   private _cpf: CPF
+  distanceInKm!: number
 
   constructor(props: OrderProps) {
     props.products = props.products || []
+    this.distanceInKm = props.distanceInKm || 0
 
     this._products = props.products.map(product => new Product({
       description: product.description,
@@ -92,6 +94,13 @@ export default class Order {
   get total() {
     return this.totalWithoutDiscount - (this.totalWithoutDiscount * (this.discountPercentage / 100))
   }
+
+  get freight(
+  ) {
+    return this._products.reduce((total, product) => {
+      return total += this.distanceInKm * product.dimesion.volume * (product.density / 100)
+    }, 0)
+  }
 }
 
 export type OrderProps = {
@@ -100,4 +109,5 @@ export type OrderProps = {
   description?: string
   discountCoupons?: DiscountCoupon[]
   cpf: string
+  distanceInKm: number
 }

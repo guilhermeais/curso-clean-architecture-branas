@@ -24,6 +24,7 @@ export class OrderViewModel {
       cpf: order.cpf,
       products: order.products.map(ProductViewModel.toDomain),
       discountCoupons: order.discountCoupons,
+      distanceInKm: order.distanceInKm,
     })
   }
 }

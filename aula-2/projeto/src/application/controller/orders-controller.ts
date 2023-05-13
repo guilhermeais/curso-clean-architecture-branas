@@ -21,4 +21,5 @@ export type CreateOrderRequest = {
   products: ProductProps[]
   description?: string
   discountCoupons?: DiscountCoupon[]
+  distanceInKm: number
 }

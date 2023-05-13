@@ -10,6 +10,9 @@ export class Product {
   weight!: number
 
   constructor(props: ProductProps) {
+    if (props.weight < 0 ) {
+      throw new Error('Invalid weight')
+    }
     props.weight = props.weight || 0
     props.price = Number(props.price || 0)
     this._dimesion = Dimesion.create(props.dimesion)
