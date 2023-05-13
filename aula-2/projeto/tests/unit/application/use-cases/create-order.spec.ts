@@ -15,7 +15,6 @@ describe('CreateOrder', () => {
     }
   }
 
-
   test('Deve criar uma ordem', async () => {
     const { sut, orderRepository } = makeSut()
 
@@ -24,6 +23,7 @@ describe('CreateOrder', () => {
     const productThree = new Product(makeProduct())
 
     const order = new Order({
+      distanceInKm: 1000,
       cpf: '999.253.640-35',
     })
 
@@ -34,5 +34,5 @@ describe('CreateOrder', () => {
     expect(orderRepository.orders.size).toBe(1)
     expect(orderRepository.orders.get(order.id)).toEqual(order)
     expect(orderRepository.orders.get(order.id)?.products.length).toEqual(3)
-  });
+  })
 })

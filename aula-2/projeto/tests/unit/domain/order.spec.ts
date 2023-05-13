@@ -13,12 +13,13 @@ describe('Order', () => {
     MockDate.reset()
   })
 
-  
-
   test('Deve calcular o valor total dos produtos', () => {
-    const products = [makeProduct(), makeProduct(), makeProduct()].map(p => new Product(p))
+    const products = [makeProduct(), makeProduct(), makeProduct()].map(
+      p => new Product(p)
+    )
     const expectedTotal = 300
     const order = new Order({
+      distanceInKm: 1000,
       cpf: '047.825.530-64',
       description: 'any-description',
       products,
@@ -29,10 +30,11 @@ describe('Order', () => {
 
   test('Deve calcular o valor total dos produtos com cupom de desconto aplicado', () => {
     const order = new Order({
+      distanceInKm: 1000,
       cpf: '047.825.530-64',
       description: 'any-description',
     })
-    const product = new Product( {
+    const product = new Product({
       ...makeProduct(),
       price: 100,
     })
@@ -54,14 +56,16 @@ describe('Order', () => {
     const orderProps: OrderProps = {
       cpf: '047.825.530-65',
       description: 'any-description',
+      distanceInKm: 1000,
     }
 
     expect(() => new Order(orderProps)).toThrowError('Invalid CPF')
-  });
+  })
 
   test('Não deve aplicar cupons de desconto expirados', () => {
     const expirationDate = new Date()
     const order = new Order({
+      distanceInKm: 1000,
       cpf: '047.825.530-64',
       description: 'any-description',
     })
@@ -75,18 +79,21 @@ describe('Order', () => {
       expirationDate.setHours(expirationDate.getHours() + 1)
     )
     MockDate.set(oneHourAfter)
-    
+
     const discountCoupon = new DiscountCoupon({
       code: 'any-code',
       percentage: 10,
-      expirationDate: new Date('2020-10-10')
+      expirationDate: new Date('2020-10-10'),
     })
 
-    expect(() => order.applyDiscountCoupon(discountCoupon)).toThrowError('Expired coupon')
-  });
+    expect(() => order.applyDiscountCoupon(discountCoupon)).toThrowError(
+      'Expired coupon'
+    )
+  })
 
- test('Deve tacar um erro se o mesmo produto for informado', () => {
+  test('Deve tacar um erro se o mesmo produto for informado', () => {
     const order = new Order({
+      distanceInKm: 1000,
       cpf: '047.825.530-64',
       description: 'any-description',
     })
@@ -96,6 +103,69 @@ describe('Order', () => {
     })
     order.addProduct(product)
 
-    expect(() => order.addProduct(product)).toThrowError('Product already exists')
- });
+    expect(() => order.addProduct(product)).toThrowError(
+      'Product already exists'
+    )
+  })
+
+  test('Deve calcular o valor do frete com base nas dimensões e peso dos produtos (somente um produto)', () => {
+    const camera = new Product({
+      ...makeProduct(),
+      price: 100,
+      weight: 1,
+      dimesion: {
+        height: 20,
+        length: 15,
+        width: 10,
+      },
+    })
+
+    const expectedFreightPrice = 10.0
+
+    const order = new Order({
+      distanceInKm: 1000,
+      cpf: '047.825.530-64',
+      description: 'any-description',
+      products: [camera],
+    })
+
+    expect(order.freight).toBe(expectedFreightPrice)
+  })
+
+  test('Deve calcular o valor do frete com base nas dimensões e peso dos produtos (vários produtos)', () => {
+    const camera = new Product({
+      ...makeProduct(),
+      name: 'camera',
+      price: 100,
+      weight: 1,
+      dimesion: {
+        height: 20,
+        length: 15,
+        width: 10,
+      },
+    })
+
+    const refrigerator = new Product({
+      ...makeProduct(),
+      name: 'refrigerator',
+      price: 100,
+      weight: 40,
+      dimesion: {
+        height: 200,
+        length: 100,
+        width: 50,
+      },
+    })
+
+    const expectedFreightPrice = 410
+
+    const order = new Order({
+      distanceInKm: 1000,
+      cpf: '047.825.530-64',
+      description: 'any-description',
+      products: [camera, refrigerator],
+    })
+
+    expect(order.freight).toBe(expectedFreightPrice)
+  })
 })
