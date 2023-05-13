@@ -20,6 +20,7 @@ describe('Order', () => {
     const expectedTotal = 300
     const order = new Order({
       distanceInKm: 1000,
+      minFreight: 0,
       cpf: '047.825.530-64',
       description: 'any-description',
       products,
@@ -31,6 +32,7 @@ describe('Order', () => {
   test('Deve calcular o valor total dos produtos com cupom de desconto aplicado', () => {
     const order = new Order({
       distanceInKm: 1000,
+      minFreight: 0,
       cpf: '047.825.530-64',
       description: 'any-description',
     })
@@ -57,6 +59,7 @@ describe('Order', () => {
       cpf: '047.825.530-65',
       description: 'any-description',
       distanceInKm: 1000,
+      minFreight: 0,
     }
 
     expect(() => new Order(orderProps)).toThrowError('Invalid CPF')
@@ -66,6 +69,7 @@ describe('Order', () => {
     const expirationDate = new Date()
     const order = new Order({
       distanceInKm: 1000,
+      minFreight: 0,
       cpf: '047.825.530-64',
       description: 'any-description',
     })
@@ -94,6 +98,7 @@ describe('Order', () => {
   test('Deve tacar um erro se o mesmo produto for informado', () => {
     const order = new Order({
       distanceInKm: 1000,
+      minFreight: 0,
       cpf: '047.825.530-64',
       description: 'any-description',
     })
@@ -124,6 +129,7 @@ describe('Order', () => {
 
     const order = new Order({
       distanceInKm: 1000,
+      minFreight: 0,
       cpf: '047.825.530-64',
       description: 'any-description',
       products: [camera],
@@ -161,11 +167,37 @@ describe('Order', () => {
 
     const order = new Order({
       distanceInKm: 1000,
+      minFreight: 0,
       cpf: '047.825.530-64',
       description: 'any-description',
       products: [camera, refrigerator],
     })
 
     expect(order.freight).toBe(expectedFreightPrice)
+  })
+
+  test('Deve retornar o preço mínimo de frete caso ele seja superior ao valor calculado', () => {
+    const miniCamera = new Product({
+      ...makeProduct(),
+      name: 'mini-camera',
+      price: 100,
+      weight: 0.5,
+      dimesion: {
+        height: 10,
+        length: 10,
+        width: 5,
+      },
+    })
+
+
+    const order = new Order({
+      distanceInKm: 1000,
+      minFreight: 12,
+      cpf: '047.825.530-64',
+      description: 'any-description',
+      products: [miniCamera],
+    })
+
+    expect(order.freight).toBe(order.minFreight)
   })
 })

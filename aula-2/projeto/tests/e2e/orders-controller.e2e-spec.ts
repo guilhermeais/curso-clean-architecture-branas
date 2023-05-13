@@ -12,6 +12,7 @@ describe('OrdersController e2e tests', () => {
         products: [makeProduct(), makeProduct(), makeProduct()],
         description: 'any-description',
         distanceInKm: 1000,
+        minFreight: 0,
       }
 
       const response = await request(expressApp.app).post('/orders').send(body)
@@ -32,6 +33,7 @@ describe('OrdersController e2e tests', () => {
         description: 'any-description',
         discountCoupons: [discountCoupon],
         distanceInKm: 1000,
+        minFreight: 0,
       }
 
       const response = await request(expressApp.app).post('/orders').send(body)
@@ -48,6 +50,7 @@ describe('OrdersController e2e tests', () => {
         cpf: '111.834.525-00',
         products: [makeProduct()],
         distanceInKm: 1000,
+        minFreight: 0,
         description: 'any-description',
       }
 

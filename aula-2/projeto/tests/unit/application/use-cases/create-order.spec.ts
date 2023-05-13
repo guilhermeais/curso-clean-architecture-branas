@@ -24,6 +24,7 @@ describe('CreateOrder', () => {
 
     const order = new Order({
       distanceInKm: 1000,
+      minFreight: 0,
       cpf: '999.253.640-35',
     })
 
