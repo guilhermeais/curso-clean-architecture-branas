@@ -6,7 +6,7 @@
 - [x] Nenhuma dimensão do item pode ser negativa
 - [x] O peso do item não pode ser negativo
 - [x] Deve calcular o valor do frete com base nas dimensões (altura, largura e profundidade em cm) e o peso dos produtos (em kg)
-- [ ] Deve retornar o preço mínimo de frete caso ele seja superior ao valor calculado
+- [x] Deve retornar o preço mínimo de frete caso ele seja superior ao valor calculado
 
 
 ## Considere

@@ -1,6 +1,6 @@
 import { CPF } from '../value-objects/cpf'
 import { DiscountCoupon } from './discount-coupon'
-import { Product, ProductProps } from './product'
+import { Product } from './product'
 import { randomUUID } from 'crypto'
 
 export default class Order {
@@ -10,10 +10,12 @@ export default class Order {
   description?: string
   private _cpf: CPF
   distanceInKm!: number
+  minFreight!: number
 
   constructor(props: OrderProps) {
     props.products = props.products || []
     this.distanceInKm = props.distanceInKm || 0
+    this.minFreight = props.minFreight || 0
 
     this._products = props.products.map(product => new Product({
       description: product.description,
@@ -97,9 +99,11 @@ export default class Order {
 
   get freight(
   ) {
-    return this._products.reduce((total, product) => {
+    const totalFreight = this._products.reduce((total, product) => {
       return total += this.distanceInKm * product.dimesion.volume * (product.density / 100)
     }, 0)
+
+    return totalFreight < this.minFreight ? this.minFreight : totalFreight
   }
 }
 
@@ -110,4 +114,5 @@ export type OrderProps = {
   discountCoupons?: DiscountCoupon[]
   cpf: string
   distanceInKm: number
+  minFreight: number
 }

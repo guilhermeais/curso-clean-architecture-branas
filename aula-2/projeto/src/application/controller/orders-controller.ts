@@ -22,4 +22,5 @@ export type CreateOrderRequest = {
   description?: string
   discountCoupons?: DiscountCoupon[]
   distanceInKm: number
+  minFreight: number
 }
