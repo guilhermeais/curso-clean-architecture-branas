@@ -2,6 +2,7 @@ import { CreateOrder } from '../../../../src/application/use-cases/create-order'
 import Order from '../../../../src/domain/entities/order'
 import { Product } from '../../../../src/domain/entities/product'
 import { InMemoryOrderRepository } from '../../../../src/infra/data/in-memory-order-repository'
+import { makeProduct } from '../../../__mocks__/product.mock'
 
 describe('CreateOrder', () => {
   function makeSut() {
@@ -14,20 +15,13 @@ describe('CreateOrder', () => {
     }
   }
 
-  function makeProduct() {
-    return new Product({
-      description: 'Camisa',
-      price: 150,
-      name: 'Camisa',
-    })
-  }
 
   test('Deve criar uma ordem', async () => {
     const { sut, orderRepository } = makeSut()
 
-    const product = makeProduct()
-    const productTwo = makeProduct()
-    const productThree = makeProduct()
+    const product = new Product(makeProduct())
+    const productTwo = new Product(makeProduct())
+    const productThree = new Product(makeProduct())
 
     const order = new Order({
       cpf: '999.253.640-35',

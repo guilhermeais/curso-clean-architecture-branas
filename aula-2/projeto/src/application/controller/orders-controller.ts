@@ -1,6 +1,5 @@
 import { DiscountCoupon } from '../../domain/entities/discount-coupon'
-import Order from '../../domain/entities/order'
-import { Product } from '../../domain/entities/product'
+import { ProductProps } from '../../domain/entities/product'
 import { CreateOrder } from '../use-cases/create-order'
 import { Controller } from './controller'
 import { OrderViewModel, OrderViewModelProps } from './view-models/oder-view-model'
@@ -9,12 +8,7 @@ export class OrdersController implements Controller<CreateOrderRequest, OrderVie
   constructor(private createOrder: CreateOrder) {}
 
   async handle(orderRequest: CreateOrderRequest): Promise<OrderViewModelProps> {
-    const order = new Order({
-      cpf: orderRequest.cpf,
-      products: orderRequest.products,
-      description: orderRequest.description,
-      discountCoupons: orderRequest.discountCoupons,
-    })
+    const order = OrderViewModel.toDomain(orderRequest)
 
     await this.createOrder.execute({ order })
 
@@ -24,7 +18,7 @@ export class OrdersController implements Controller<CreateOrderRequest, OrderVie
 
 export type CreateOrderRequest = {
   cpf: string
-  products: Product[]
+  products: ProductProps[]
   description?: string
   discountCoupons?: DiscountCoupon[]
 }
