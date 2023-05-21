@@ -1,3 +1,5 @@
+import { Checkout } from './checkout'
+
 export enum Commands {
   SET_CPF = 'set-cpf',
   ADD_ITEM = 'add-item',
@@ -5,19 +7,21 @@ export enum Commands {
   QUIT = 'quit',
 }
 
-const input = {
+let input: Checkout.Input = {
   cpf: '',
-  items: [] as any[],
+  items: [],
 }
 
-process.stdin.on('data', data => {
-  const command = data.toString().replace(/\n/g, '');
-  
-  if (command.includes(Commands.ADD_ITEM)) {  
-    const [idProduct, quantity] = command.replace(`${Commands.ADD_ITEM} `, '').split(' ')
+process.stdin.on('data', async data => {
+  const command = data.toString().replace(/\n/g, '')
+
+  if (command.includes(Commands.ADD_ITEM)) {
+    const [productId, quantity] = command
+      .replace(`${Commands.ADD_ITEM} `, '')
+      .split(' ')
     input.items.push({
-      idProduct: parseInt(idProduct),
-      quantity: parseInt(quantity)
+      productId: parseInt(productId),
+      quantity: parseInt(quantity),
     })
     console.log(input)
     return
@@ -30,12 +34,25 @@ process.stdin.on('data', data => {
   }
 
   if (command.includes(Commands.CHECKOUT)) {
-    console.log('checkout')
+    const checkoutService = new Checkout()
+
+    try {
+      const checkout = await checkoutService.execute(input)
+
+      console.log(checkout)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      input = {
+        cpf: '',
+        items: [],
+      }
+    }
     return
   }
 
   if (command.includes(Commands.QUIT)) {
-    process.exit();
+    process.exit()
   }
 
   console.log('invalid command')
