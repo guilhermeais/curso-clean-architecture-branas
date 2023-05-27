@@ -1,11 +1,38 @@
 import { Checkout } from '../src/checkout'
+import { CouponRepositoryInMemory } from '../src/coupon-repository-in-memory'
+import { Coupom } from '../src/coupon.entity'
+import { Product } from '../src/product-entity'
+import ProductRepositoryInMemory from '../src/product-repository-in-memory'
+
+let checkout: Checkout
+let productRepository: ProductRepositoryInMemory
+let couponRepository: CouponRepositoryInMemory
+
+beforeEach(() => {
+  productRepository = new ProductRepositoryInMemory()
+  productRepository.products = new Map<string, Product>([
+    ['1', new Product('1', 'A', 150, 100, 30, 10, 3)],
+    ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
+    ['3', new Product('3', 'C', 100, 10, 10, 10, 0.9)],
+    ['4', new Product('4', 'D', 30, -10, -10, -10, 1)],
+    ['5', new Product('5', 'D', 30, 10, 10, 10, -1)],
+  ])
+  couponRepository = new CouponRepositoryInMemory()
+  const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
+  const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
+  couponRepository.coupons = new Map<string, Coupom>([
+    ['VALE20', new Coupom('VALE20', 20, tomorrow)],
+    ['VALE10', new Coupom('VALE10', 10, yesterday)],
+  ])
+
+  checkout = new Checkout(productRepository, couponRepository)
+})
 
 test('Não deve criar pedido com CPF inválido', async () => {
   const given: Checkout.Input = {
     cpf: '162.759.630-34',
     items: [],
   }
-  const checkout = new Checkout()
 
   const output = checkout.execute(given)
 
@@ -27,8 +54,6 @@ test('Deve fazer um pedido com 3 itens', async () => {
     ],
   }
 
-  const checkout = new Checkout()
-
   const output = await checkout.execute(given)
   expect(output.total).toEqual(350)
 })
@@ -48,8 +73,6 @@ test('Deve fazer um pedido com 3 itens com cupom de desconto', async () => {
     ],
     coupon: 'VALE20',
   }
-
-  const checkout = new Checkout()
 
   const output = await checkout.execute(given)
   expect(output.total).toEqual(280)
@@ -71,8 +94,6 @@ test('Não deve aplicar cupons de desconto vencidos', async () => {
     coupon: 'VALE10',
   }
 
-  const checkout = new Checkout()
-
   const output = await checkout.execute(given)
   expect(output.total).toEqual(350)
 })
@@ -93,8 +114,6 @@ test('Não deve aplicar cupons de desconto inexistentes', async () => {
     coupon: 'VALE11',
   }
 
-  const checkout = new Checkout()
-
   const output = await checkout.execute(given)
   expect(output.total).toEqual(350)
 })
@@ -110,8 +129,6 @@ test('Não deve fazer um pedido com quantidade negativa de itens', async () => {
     ],
     coupon: 'VALE11',
   }
-
-  const checkout = new Checkout()
 
   const output = checkout.execute(given)
   await expect(output).rejects.toThrowError('Invalid quantity')
@@ -132,8 +149,6 @@ test('Não deve fazer um pedido com item duplicado', async () => {
     ],
     coupon: 'VALE11',
   }
-
-  const checkout = new Checkout()
 
   const output = checkout.execute(given)
   await expect(output).rejects.toThrowError('Duplicated item')
@@ -156,8 +171,6 @@ test('Deve fazer um pedido com 3 itens calculando o frete', async () => {
     to: '04842000',
   }
 
-  const checkout = new Checkout()
-
   const output = await checkout.execute(given)
   expect(output.subtotal).toEqual(250)
   expect(output.freight).toEqual(250)
@@ -177,8 +190,6 @@ test('Deve fazer um pedido com 3 itens calculando o frete com preço minimo', as
     to: '04842000',
   }
 
-  const checkout = new Checkout()
-
   const output = await checkout.execute(given)
   expect(output.freight).toEqual(10)
 })
@@ -194,8 +205,6 @@ test('Não deve fazer um pedido se o produto tiver dimensões negativas', async 
     ],
   }
 
-  const checkout = new Checkout()
-
   const output = checkout.execute(given)
   await expect(output).rejects.toThrowError('Invalid dimensions')
 })
@@ -210,8 +219,6 @@ test('Não deve fazer um pedido se o produto tiver peso negativo', async () => {
       },
     ],
   }
-
-  const checkout = new Checkout()
 
   const output = checkout.execute(given)
   await expect(output).rejects.toThrowError('Invalid weight')

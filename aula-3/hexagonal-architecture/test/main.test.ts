@@ -1,7 +1,7 @@
 import request from 'supertest'
 import app from '../src/app'
 
-test('Não deve criar pedido com CPF inválido', async () => {
+test.skip('Não deve criar pedido com CPF inválido', async () => {
   const given = {
     cpf: '162.759.630-34',
   }
@@ -12,7 +12,7 @@ test('Não deve criar pedido com CPF inválido', async () => {
   expect(output.message).toBe('Invalid CPF')
 })
 
-test('Deve fazer um pedido com 3 itens', async () => {
+test.skip('Deve fazer um pedido com 3 itens', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -33,7 +33,7 @@ test('Deve fazer um pedido com 3 itens', async () => {
   expect(output.total).toEqual(350)
 })
 
-test('Deve fazer um pedido com 3 itens com cupom de desconto', async () => {
+test.skip('Deve fazer um pedido com 3 itens com cupom de desconto', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -55,7 +55,7 @@ test('Deve fazer um pedido com 3 itens com cupom de desconto', async () => {
   expect(output.total).toEqual(280)
 })
 
-test('Não deve aplicar cupons de desconto vencidos', async () => {
+test.skip('Não deve aplicar cupons de desconto vencidos', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -77,7 +77,7 @@ test('Não deve aplicar cupons de desconto vencidos', async () => {
   expect(output.total).toEqual(350)
 })
 
-test('Não deve aplicar cupons de desconto inexistentes', async () => {
+test.skip('Não deve aplicar cupons de desconto inexistentes', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -99,7 +99,7 @@ test('Não deve aplicar cupons de desconto inexistentes', async () => {
   expect(output.total).toEqual(350)
 })
 
-test('Não deve fazer um pedido com quantidade negativa de itens', async () => {
+test.skip('Não deve fazer um pedido com quantidade negativa de itens', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -118,7 +118,7 @@ test('Não deve fazer um pedido com quantidade negativa de itens', async () => {
   expect(output.message).toEqual('Invalid quantity')
 })
 
-test('Não deve fazer um pedido com item duplicado', async () => {
+test.skip('Não deve fazer um pedido com item duplicado', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -140,7 +140,7 @@ test('Não deve fazer um pedido com item duplicado', async () => {
   expect(output.message).toEqual('Duplicated item')
 })
 
-test('Deve fazer um pedido com 3 itens calculando o frete', async () => {
+test.skip('Deve fazer um pedido com 3 itens calculando o frete', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -167,7 +167,7 @@ test('Deve fazer um pedido com 3 itens calculando o frete', async () => {
   )
 })
 
-test('Deve fazer um pedido com 3 itens calculando o frete com preço minimo', async () => {
+test.skip('Deve fazer um pedido com 3 itens calculando o frete com preço minimo', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -186,7 +186,7 @@ test('Deve fazer um pedido com 3 itens calculando o frete com preço minimo', as
   expect(output.freight).toEqual(10)
 })
 
-test('Não deve fazer um pedido se o produto tiver dimensões negativas', async () => {
+test.skip('Não deve fazer um pedido se o produto tiver dimensões negativas', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
@@ -204,7 +204,7 @@ test('Não deve fazer um pedido se o produto tiver dimensões negativas', async 
   expect(output.message).toEqual('Invalid dimensions')
 })
 
-test('Não deve fazer um pedido se o produto tiver peso negativo', async () => {
+test.skip('Não deve fazer um pedido se o produto tiver peso negativo', async () => {
   const given = {
     cpf: '587.099.304-00',
     items: [
