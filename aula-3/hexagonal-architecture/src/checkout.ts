@@ -1,46 +1,14 @@
+import CouponsRepository from './coupons-repository'
+import ProductsRepository from './products-repository'
 import { validate } from './validateCPF'
 
-class Product {
-  constructor(
-    public id: string,
-    public name: string,
-    public price: number,
-    public width: number,
-    public height: number,
-    public length: number,
-    public weight: number
-  ) {}
-}
-
-class Coupom {
-  constructor(
-    public code: string,
-    public percentage: number,
-    public expirationDate: Date
-  ) {}
-
-  get isExpired() {
-    return this.expirationDate.getTime() <= new Date().getTime()
-  }
-}
-const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
-
-const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
-
-const coupons = new Map<string, Coupom>([
-  ['VALE20', new Coupom('VALE20', 20, tomorrow)],
-  ['VALE10', new Coupom('VALE10', 10, yesterday)],
-])
-
-const products = new Map<string, Product>([
-  ['1', new Product('1', 'A', 150, 100, 30, 10, 3)],
-  ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
-  ['3', new Product('3', 'C', 100, 10, 10, 10, 0.9)],
-  ['4', new Product('4', 'D', 30, -10, -10, -10, 1)],
-  ['5', new Product('5', 'D', 30, 10, 10, 10, -1)],
-])
-
 export class Checkout {
+  constructor(
+    private readonly productRepository: ProductsRepository,
+    private readonly couponRepository: CouponsRepository
+  ) {
+    
+  }
   async execute(data: Checkout.Input): Promise<Checkout.Output> {
     const checkout: Checkout.Output = {
       subtotal: 0,
@@ -59,8 +27,7 @@ export class Checkout {
         if (item.quantity <= 0) {
           throw new Error('Invalid quantity')
         }
-
-        const product = products.get(item.productId.toString())
+        const product = await this.productRepository.getProduct(item.productId.toString())
 
         const isDuplicated = processedIds.has(item.productId.toString())
 
@@ -98,7 +65,7 @@ export class Checkout {
     checkout.total = checkout.subtotal
 
     if (coupon) {
-      const coupom = coupons.get(coupon)
+      const coupom = await this.couponRepository.getCoupon(coupon)
       if (coupom && !coupom.isExpired) {
         checkout.total -= (checkout.total * coupom.percentage) / 100
       }
