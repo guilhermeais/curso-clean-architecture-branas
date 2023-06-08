@@ -1,6 +1,6 @@
 ### Testes
 
-1. Deve fazer um pedido e salvar ele em algum lugar;
+1. Deve fazer um pedido e salvar ele em algum lugar; - OK!
 2. Gerar um número de série do pedido;
 3. Deve simular o frete, retornando o frete previsto para o pedido;
 4. Deve validar o cupom de desconto, indicando em um booleano se o cupom é válido
