@@ -13,5 +13,6 @@ export default class GetOrder {
 export namespace GetOrder {
   export type Output = {
     total: number
+    code: string
   }
 }

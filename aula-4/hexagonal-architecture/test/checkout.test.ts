@@ -202,8 +202,10 @@ test('Deve fazer um pedido com 3 itens calculando o frete com preço minimo', as
   expect(output.freight).toEqual(10)
 })
 
-test('Deve fazer um pedido com 3 itens calculando o obter o pedido salvo', async () => {
+test('Deve fazer um pedido e obter o pedido salvo', async () => {
+  const orderId = randomUUID()
   const given: Checkout.Input = {
+    orderId,
     cpf: '587.099.304-00',
     items: [
       {
@@ -215,10 +217,72 @@ test('Deve fazer um pedido com 3 itens calculando o obter o pedido salvo', async
     to: '04842000',
   }
 
-  const output = await checkout.execute(given)
+  await checkout.execute(given)
 
-  const savedOrder = await getOrder.execute(output.orderId)
+  const savedOrder = await getOrder.execute(orderId)
   expect(savedOrder.total).toEqual(110)
+})
+
+test('Deve fazer um pedido e gerar o código do pedido', async () => {
+  const orderId = randomUUID()
+  const given: Checkout.Input = {
+    orderId,
+    cpf: '587.099.304-00',
+    items: [
+      {
+        productId: 3,
+        quantity: 1,
+      },
+    ],
+    from: '04841010',
+    to: '04842000',
+    date: new Date('2023-01-01T10:00:00'),
+  }
+
+  await checkout.execute(given)
+  const savedOrder = await getOrder.execute(orderId)
+  expect(savedOrder.code).toBe('202300000001')
+})
+
+test('Deve fazer dois pedidos e gerar o código do pedido', async () => {
+  const firstOrderId = randomUUID()
+  const secondOrderId = randomUUID()
+
+  const firestGiven: Checkout.Input = {
+    orderId: firstOrderId,
+    cpf: '587.099.304-00',
+    items: [
+      {
+        productId: 3,
+        quantity: 1,
+      },
+    ],
+    from: '04841010',
+    to: '04842000',
+    date: new Date('2023-01-01T10:00:00'),
+  }
+
+  const secondGiven: Checkout.Input = {
+    orderId: secondOrderId,
+    cpf: '587.099.304-00',
+    items: [
+      {
+        productId: 3,
+        quantity: 1,
+      },
+    ],
+    from: '04841010',
+    to: '04842000',
+    date: new Date('2023-01-01T10:00:00'),
+  }
+
+  await checkout.execute(firestGiven)
+  await checkout.execute(secondGiven)
+  const firstOrder = await getOrder.execute(firstOrderId)
+  const secondOrder = await getOrder.execute(secondOrderId)
+
+  expect(firstOrder.code).toBe('202300000001')
+  expect(secondOrder.code).toBe('202300000002')
 })
 
 test('Não deve fazer um pedido se o produto tiver dimensões negativas', async () => {

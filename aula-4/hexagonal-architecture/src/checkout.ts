@@ -12,11 +12,13 @@ export class Checkout {
   ) {}
   async execute(data: Checkout.Input): Promise<Checkout.Output> {
     const checkout: Checkout.Output = {
-      orderId: randomUUID(),
+      orderId: data.orderId || randomUUID(),
       subtotal: 0,
       freight: 0,
       total: 0,
     }
+
+    const today = data.date || new Date()
 
     if (!validate(data.cpf)) {
       throw new Error('Invalid CPF')
@@ -67,6 +69,8 @@ export class Checkout {
     }
 
     checkout.total = checkout.subtotal
+    const sequence = (await this.orderRepository.countAll()) + 1
+    const code = `${today.getFullYear()}${sequence.toString().padStart(8, '0')}`
 
     if (coupon) {
       const coupom = await this.couponRepository.getCoupon(coupon)
@@ -83,6 +87,7 @@ export class Checkout {
       total: checkout.total,
       freight: checkout.freight,
       items: data.items,
+      code,
     }
 
     await this.orderRepository.save(order)
@@ -93,11 +98,13 @@ export class Checkout {
 
 export namespace Checkout {
   export type Input = {
+    orderId?: string
     cpf: string
     items: { productId: number; quantity: number }[]
     coupon?: string
     from?: string
     to?: string
+    date?: Date
   }
 
   export type Output = {

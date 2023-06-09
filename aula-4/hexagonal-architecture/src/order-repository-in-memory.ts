@@ -10,4 +10,8 @@ export default class OrderRepositoryInMemory implements OrderRepository {
   async save(order: any): Promise<void> {
     this.orders.set(order.id, order)
   }
+
+  async countAll(): Promise<number> {
+    return this.orders.size
+  }
 }
