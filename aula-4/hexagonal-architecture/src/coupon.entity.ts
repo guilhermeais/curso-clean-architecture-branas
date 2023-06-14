@@ -2,10 +2,14 @@ export class Coupom {
   constructor(
     public code: string,
     public percentage: number,
-    public expirationDate: Date
+    public expireDate: Date
   ) {}
 
-  get isExpired() {
-    return this.expirationDate.getTime() <= new Date().getTime()
+  isExpired(date: Date = new Date()) {
+    return this.expireDate.getTime() <= date.getTime()
+  }
+
+  calculateDiscount(value: number): number {
+    return value * (this.percentage / 100)
   }
 }

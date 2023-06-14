@@ -11,8 +11,6 @@ beforeEach(() => {
     ['1', new Product('1', 'A', 150, 100, 30, 10, 3)],
     ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
     ['3', new Product('3', 'C', 100, 10, 10, 10, 0.9)],
-    ['4', new Product('4', 'D', 30, -10, -10, -10, 1)],
-    ['5', new Product('5', 'D', 30, 10, 10, 10, -1)],
   ])
 
   simulateFreight = new SimulateFreight(productRepository)

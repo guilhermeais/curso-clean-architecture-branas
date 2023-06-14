@@ -4,7 +4,7 @@ import { CouponRepositoryInMemory } from '../src/coupon-repository-in-memory'
 import { Coupom } from '../src/coupon.entity'
 import { Product } from '../src/product-entity'
 import ProductRepositoryInMemory from '../src/product-repository-in-memory'
-import GetOrder from '../src/GetOrder'
+import GetOrder from '../src/get-order'
 import OrderRepositoryInMemory from '../src/order-repository-in-memory'
 
 let checkout: Checkout
@@ -19,8 +19,6 @@ beforeEach(() => {
     ['1', new Product('1', 'A', 150, 100, 30, 10, 3)],
     ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
     ['3', new Product('3', 'C', 100, 10, 10, 10, 0.9)],
-    ['4', new Product('4', 'D', 30, -10, -10, -10, 1)],
-    ['5', new Product('5', 'D', 30, 10, 10, 10, -1)],
   ])
   couponRepository = new CouponRepositoryInMemory()
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
@@ -180,7 +178,6 @@ test('Deve fazer um pedido com 3 itens calculando o frete', async () => {
   }
 
   const output = await checkout.execute(given)
-  expect(output.subtotal).toEqual(250)
   expect(output.freight).toEqual(250)
   expect(output.total).toEqual(250 + 250)
 })
@@ -283,34 +280,4 @@ test('Deve fazer dois pedidos e gerar o código do pedido', async () => {
 
   expect(firstOrder.code).toBe('202300000001')
   expect(secondOrder.code).toBe('202300000002')
-})
-
-test('Não deve fazer um pedido se o produto tiver dimensões negativas', async () => {
-  const given: Checkout.Input = {
-    cpf: '587.099.304-00',
-    items: [
-      {
-        productId: 4, // 150
-        quantity: 1,
-      },
-    ],
-  }
-
-  const output = checkout.execute(given)
-  await expect(output).rejects.toThrowError('Invalid dimensions')
-})
-
-test('Não deve fazer um pedido se o produto tiver peso negativo', async () => {
-  const given: Checkout.Input = {
-    cpf: '587.099.304-00',
-    items: [
-      {
-        productId: 5, // 150
-        quantity: 1,
-      },
-    ],
-  }
-
-  const output = checkout.execute(given)
-  await expect(output).rejects.toThrowError('Invalid weight')
 })

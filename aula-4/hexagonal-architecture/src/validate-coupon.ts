@@ -8,7 +8,7 @@ export default class ValidateCoupon {
       isValid: false,
     }
     const coupom = await this.couponRepository.getCoupon(code)
-    if (coupom && !coupom.isExpired) {
+    if (coupom && !coupom.isExpired(new Date())) {
       output.isValid = true
     }
 
