@@ -1,11 +1,8 @@
-import { randomUUID } from 'crypto'
 import CouponsRepository from './coupons-repository'
 import ProductsRepository from './products-repository'
-import { validate } from './validateCPF'
 import OrderRepository from './order-repository'
 import { FreightCalculator } from './freight-calculator'
 import { Order } from './order.entity'
-import { Product } from './product-entity'
 
 export class Checkout {
   constructor(
