@@ -3,13 +3,21 @@ import ProductsRepository from './products-repository'
 import OrderRepository from './order-repository'
 import { FreightCalculator } from './freight-calculator'
 import { Order } from './order.entity'
+import RepositoryFactory from './repository-factory'
 
 export class Checkout {
-  constructor(
-    private readonly productRepository: ProductsRepository,
-    private readonly couponRepository: CouponsRepository,
+  private readonly productRepository: ProductsRepository
+    private readonly couponRepository: CouponsRepository
     private readonly orderRepository: OrderRepository
-  ) {}
+    
+  constructor(
+    repositoryFactory: RepositoryFactory
+  ) {
+    this.productRepository = repositoryFactory.createProductsRepository()
+    this.couponRepository = repositoryFactory.createCouponsRepository()
+    this.orderRepository = repositoryFactory.createOrderRepository()
+  }
+
   async execute(input: Checkout.Input): Promise<Checkout.Output> {
     const sequence = (await this.orderRepository.countAll()) + 1
     const order = new Order(input.orderId, input.cpf, input.date, sequence)

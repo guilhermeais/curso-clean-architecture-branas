@@ -1,19 +1,22 @@
+import { InMemoryRepositoryFactory } from '../src/in-memory-repository-factory'
 import { Product } from '../src/product-entity'
 import ProductRepositoryInMemory from '../src/product-repository-in-memory'
+import RepositoryFactory from '../src/repository-factory'
 import SimulateFreight from '../src/simulate-freight'
 
 let simulateFreight: SimulateFreight
-let productRepository: ProductRepositoryInMemory
+let repositoryFactory: InMemoryRepositoryFactory
 
 beforeEach(() => {
-  productRepository = new ProductRepositoryInMemory()
-  productRepository.products = new Map<string, Product>([
+  repositoryFactory = new InMemoryRepositoryFactory()
+  repositoryFactory.productRepository = new ProductRepositoryInMemory()
+  repositoryFactory.productRepository.products = new Map<string, Product>([
     ['1', new Product('1', 'A', 150, 100, 30, 10, 3)],
     ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
     ['3', new Product('3', 'C', 100, 10, 10, 10, 0.9)],
   ])
 
-  simulateFreight = new SimulateFreight(productRepository)
+  simulateFreight = new SimulateFreight(repositoryFactory)
 })
 
 test('Deve simular o frete', async () => {

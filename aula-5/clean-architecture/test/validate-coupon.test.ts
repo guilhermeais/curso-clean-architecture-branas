@@ -1,19 +1,21 @@
 import { CouponRepositoryInMemory } from "../src/coupon-repository-in-memory";
 import { Coupom } from "../src/coupon.entity";
+import { InMemoryRepositoryFactory } from "../src/in-memory-repository-factory";
 import ValidateCoupon from "../src/validate-coupon";
 
 let sut: ValidateCoupon;
-let couponRepository: CouponRepositoryInMemory
+let repositoryFactory: InMemoryRepositoryFactory
 
 beforeEach(() => {
-  couponRepository = new CouponRepositoryInMemory()
+  repositoryFactory = new InMemoryRepositoryFactory()
+  repositoryFactory.couponsRepository = new CouponRepositoryInMemory()
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
   const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
-  couponRepository.coupons = new Map<string, Coupom>([
+  repositoryFactory.couponsRepository.coupons = new Map<string, Coupom>([
     ['VALE20', new Coupom('VALE20', 20, tomorrow)],
     ['VALE10', new Coupom('VALE10', 10, yesterday)],
   ])
-  sut = new ValidateCoupon(couponRepository);
+  sut = new ValidateCoupon(repositoryFactory);
 })
 
 test('Deve validar o cupom de desconto válido', async () => {

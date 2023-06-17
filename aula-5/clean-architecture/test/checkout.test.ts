@@ -3,35 +3,33 @@ import { Checkout } from '../src/checkout'
 import { CouponRepositoryInMemory } from '../src/coupon-repository-in-memory'
 import { Coupom } from '../src/coupon.entity'
 import { Product } from '../src/product-entity'
-import ProductRepositoryInMemory from '../src/product-repository-in-memory'
 import GetOrder from '../src/get-order'
 import OrderRepositoryInMemory from '../src/order-repository-in-memory'
+import { InMemoryRepositoryFactory } from '../src/in-memory-repository-factory'
 
 let checkout: Checkout
 let getOrder: GetOrder
-let productRepository: ProductRepositoryInMemory
-let couponRepository: CouponRepositoryInMemory
-let orderRepository: OrderRepositoryInMemory
+let repositoryFactory: InMemoryRepositoryFactory
 
 beforeEach(() => {
-  productRepository = new ProductRepositoryInMemory()
-  productRepository.products = new Map<string, Product>([
+  repositoryFactory = new InMemoryRepositoryFactory()
+  repositoryFactory.productRepository.products = new Map<string, Product>([
     ['1', new Product('1', 'A', 150, 100, 30, 10, 3)],
     ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
     ['3', new Product('3', 'C', 100, 10, 10, 10, 0.9)],
   ])
-  couponRepository = new CouponRepositoryInMemory()
+  repositoryFactory.couponsRepository = new CouponRepositoryInMemory()
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
   const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
-  couponRepository.coupons = new Map<string, Coupom>([
+  repositoryFactory.couponsRepository.coupons = new Map<string, Coupom>([
     ['VALE20', new Coupom('VALE20', 20, tomorrow)],
     ['VALE10', new Coupom('VALE10', 10, yesterday)],
   ])
 
-  orderRepository = new OrderRepositoryInMemory()
+  repositoryFactory.orderRepository = new OrderRepositoryInMemory()
 
-  checkout = new Checkout(productRepository, couponRepository, orderRepository)
-  getOrder = new GetOrder(orderRepository)
+  checkout = new Checkout(repositoryFactory)
+  getOrder = new GetOrder(repositoryFactory)
 })
 
 test('Não deve criar pedido com CPF inválido', async () => {
