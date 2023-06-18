@@ -15,7 +15,7 @@ export class Order {
     readonly id: string = randomUUID(),
     cpf: string,
     readonly date: Date = new Date(),
-    readonly sequence: number
+    readonly sequence: number = 0
   ) {
     this.cpf = new CPF(cpf)
     this.items = []
