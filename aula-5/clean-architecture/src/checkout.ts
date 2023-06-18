@@ -4,8 +4,9 @@ import OrderRepository from './order-repository'
 import { FreightCalculator } from './freight-calculator'
 import { Order } from './order.entity'
 import RepositoryFactory from './repository-factory'
+import { UseCase } from './usecase'
 
-export class Checkout {
+export class Checkout implements UseCase<Checkout.Input, Checkout.Output> {
   private readonly productRepository: ProductsRepository
     private readonly couponRepository: CouponsRepository
     private readonly orderRepository: OrderRepository

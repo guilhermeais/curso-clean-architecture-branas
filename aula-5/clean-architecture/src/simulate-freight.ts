@@ -1,8 +1,9 @@
 import { FreightCalculator } from './freight-calculator'
 import ProductsRepository from './products-repository'
 import RepositoryFactory from './repository-factory'
+import { UseCase } from './usecase'
 
-export default class SimulateFreight {
+export default class SimulateFreight implements UseCase<SimulateFreight.Input,SimulateFreight.Output> {
   private readonly productRepository: ProductsRepository
   constructor(
     repositoryFactory: RepositoryFactory

@@ -1,13 +1,20 @@
 import { Checkout } from "./checkout";
 import { HttpServer } from "./http-server";
+import { UseCaseFactory } from "./usecase-factory";
 
 /**
  * Interface adapter
  */
 export class HttpController {
-  constructor(readonly httpServer: HttpServer, readonly checkout: Checkout) {
+  constructor(readonly httpServer: HttpServer, readonly useCaseFactory: UseCaseFactory) {
     httpServer.on('post', '/checkout', async function (params, body) {
-      const output = await checkout.execute(body);
+      const output = await useCaseFactory.createCheckout().execute(body);
+
+      return output
+    })
+
+    httpServer.on('get', '/products', async function (params, body) {
+      const output = await useCaseFactory.createGetProducts().execute();
 
       return output
     })

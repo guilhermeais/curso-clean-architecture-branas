@@ -1,5 +1,6 @@
 import { ConsumeMessage, connect } from 'amqplib'
 import { Checkout } from './checkout'
+import { InMemoryRepositoryFactory } from './in-memory-repository-factory'
 
 async function main() {
   const connection = await connect('amqp://localhost')
@@ -12,7 +13,7 @@ async function main() {
     try {
       const input = JSON.parse(msg.content.toString()) as Checkout.Input
 
-      const checkoutService = new Checkout()
+      const checkoutService = new Checkout(new InMemoryRepositoryFactory())
 
       const output = await checkoutService.execute(input)
       console.log(output)

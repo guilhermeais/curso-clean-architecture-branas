@@ -1,7 +1,8 @@
 import OrderRepository from './order-repository'
 import RepositoryFactory from './repository-factory'
+import { UseCase } from './usecase'
 
-export default class GetOrder {
+export default class GetOrder implements UseCase<string, GetOrder.Output> {
   private readonly orderRepository: OrderRepository
   constructor(
     repositoryFactory: RepositoryFactory
