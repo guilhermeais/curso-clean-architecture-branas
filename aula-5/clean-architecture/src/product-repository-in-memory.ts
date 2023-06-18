@@ -9,4 +9,8 @@ export default class ProductRepositoryInMemory implements ProductsRepository {
 
     return product || null
   }
+
+  async list(): Promise<Product[]> {
+    return [...this.products.values()]
+  }
 }
