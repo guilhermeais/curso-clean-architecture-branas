@@ -1,6 +1,7 @@
 import { Server } from "http";
 import { HttpServer } from "./http-server";
 import express, { Express } from 'express';
+import cors from 'cors'
 
 /**
  * Framework an Driver
@@ -11,6 +12,7 @@ export default class ExpressAdapter implements HttpServer {
   constructor() {
     this.app = express();
     this.app.use(express.json())
+    this.app.use(cors())
     this.nativeListener = this.app
   }
 
