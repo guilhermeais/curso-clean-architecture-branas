@@ -16,7 +16,7 @@ describe('GET /products', () => {
       .mockReturnValue(productsRepo)
   })
 
-  test('should get all products', async () => {
+  test('Deve retornar todos os produtos', async () => {
     const mockedProducts = [new Product('1', 'A', 150, 100, 30, 10, 3)]
     productsRepo.products = new Map<string, Product>(
       mockedProducts.map(p => [p.id.toString(), p])
@@ -28,5 +28,24 @@ describe('GET /products', () => {
 
     expect(result.statusCode).toEqual(200)
     expect(result.body).toEqual(mockedProducts)
+  })
+
+  test('Deve retornar um produto', async () => {
+    const mockedProducts = [new Product('1', 'A', 150, 100, 30, 10, 3)]
+    productsRepo.products = new Map<string, Product>(
+      mockedProducts.map(p => [p.id.toString(), p])
+    )
+
+    const result = await supertest(
+      httpController.httpServer.nativeListener
+    ).get('/products/1')
+
+    const expectedProduct = mockedProducts[0]
+    expect(result.statusCode).toEqual(200)
+    expect(result.body).toEqual({
+      ...expectedProduct,
+      volume: expectedProduct.volume,
+      density: expectedProduct.density,
+    })
   })
 })

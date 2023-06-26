@@ -21,4 +21,5 @@ test('Deve retornar um produto cadastrado', async () => {
   expect(result?.id).toEqual('1')
   expect(result?.description).toEqual('A')
   expect(result?.price).toEqual(150)
+  expect(result?.length).toEqual(10)
 });
