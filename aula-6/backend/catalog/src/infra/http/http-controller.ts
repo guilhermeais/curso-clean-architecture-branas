@@ -12,5 +12,11 @@ export class HttpController {
 
       return output
     })
+  
+    httpServer.on('get', '/products/:id', async function (params, body) {
+      const output = await useCaseFactory.createGetProduct().execute(params.id);
+
+      return output
+    })
   }
 }
