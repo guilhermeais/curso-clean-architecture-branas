@@ -1,17 +1,13 @@
-import { FreightCalculator } from "../../src/domain/entities/freight-calculator"
-import { Product } from "../../src/domain/entities/product-entity"
+import { FreightCalculator } from '../../src/domain/entities/freight-calculator'
 
 test('Deve calcular o frete', () => {
-  const product = new Product(1, 'A', 1000, 100, 30, 10, 3)
-  const freight = FreightCalculator.calculate(product)
+  const freight = FreightCalculator.calculate(1000, 0.03, 100)
 
   expect(freight).toEqual(30)
 })
 
 test('Deve calcular o frete com frete mínimo', () => {
-  const product = new Product(1, 'A', 1000, 10, 10, 10, 0.9)
-
-   const freight = FreightCalculator.calculate(product)
+  const freight = FreightCalculator.calculate(1000, 0.01, 100)
 
   expect(freight).toEqual(10)
-});
+})

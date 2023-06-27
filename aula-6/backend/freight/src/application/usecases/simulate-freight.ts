@@ -1,27 +1,18 @@
 import { FreightCalculator } from '../../domain/entities/freight-calculator'
-import ProductsRepository from '../protocols/repositories/products-repository'
-import RepositoryFactory from '../protocols/repositories/repository-factory'
 import { UseCase } from './usecase'
 
-export default class SimulateFreight implements UseCase<SimulateFreight.Input,SimulateFreight.Output> {
-  private readonly productRepository: ProductsRepository
-  constructor(
-    repositoryFactory: RepositoryFactory
-  ) {
-    this.productRepository = repositoryFactory.createProductsRepository()
-  }
-
+export default class SimulateFreight
+  implements UseCase<SimulateFreight.Input, SimulateFreight.Output>
+{
   async execute(input: SimulateFreight.Input): Promise<SimulateFreight.Output> {
     let totalFreight: number = 0
     for (const item of input.items) {
-      const product = await this.productRepository.getProduct(
-        item.productId.toString()
+      const freight = FreightCalculator.calculate(
+        1000,
+        item.volume,
+        item.density
       )
-
-      if (product) {
-       const productFreight = FreightCalculator.calculate(product)
-        totalFreight += productFreight
-      }
+      totalFreight += freight * item.quantity
     }
     return { freight: totalFreight }
   }
@@ -29,7 +20,7 @@ export default class SimulateFreight implements UseCase<SimulateFreight.Input,Si
 
 export namespace SimulateFreight {
   export type Input = {
-    items: { productId: number; quantity: number }[]
+    items: { volume: number; density: number; quantity: number }[]
     from: string
     to: string
   }
