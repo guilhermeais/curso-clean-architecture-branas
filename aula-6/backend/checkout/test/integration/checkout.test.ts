@@ -21,6 +21,7 @@ beforeEach(() => {
     ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
     ['3', new Product('3', 'C', 100, 10, 10, 10, 0.9)],
   ])
+  gatewayFactory.freightGateway.result.freight = 20
   repositoryFactory.couponsRepository = new CouponRepositoryInMemory()
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1))
   const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
@@ -41,7 +42,7 @@ test('Não deve criar pedido com CPF inválido', async () => {
     items: [],
   }
 
-  const output = await checkout.execute(given)
+  const output =  checkout.execute(given)
 
   await expect(output).rejects.toThrowError('Invalid CPF')
 })
@@ -179,8 +180,8 @@ test('Deve fazer um pedido com 3 itens calculando o frete', async () => {
   }
 
   const output = await checkout.execute(given)
-  expect(output.freight).toEqual(250)
-  expect(output.total).toEqual(250 + 250)
+  expect(output.freight).toEqual(20)
+  expect(output.total).toEqual(270)
 })
 
 test('Deve fazer um pedido com 3 itens calculando o frete com preço minimo', async () => {
@@ -197,7 +198,7 @@ test('Deve fazer um pedido com 3 itens calculando o frete com preço minimo', as
   }
 
   const output = await checkout.execute(given)
-  expect(output.freight).toEqual(10)
+  expect(output.freight).toEqual(20)
 })
 
 test('Deve fazer um pedido e obter o pedido salvo', async () => {
@@ -218,7 +219,7 @@ test('Deve fazer um pedido e obter o pedido salvo', async () => {
   await checkout.execute(given)
 
   const savedOrder = await getOrder.execute(orderId)
-  expect(savedOrder.total).toEqual(110)
+  expect(savedOrder.total).toEqual(120)
 })
 
 test('Deve fazer um pedido e gerar o código do pedido', async () => {

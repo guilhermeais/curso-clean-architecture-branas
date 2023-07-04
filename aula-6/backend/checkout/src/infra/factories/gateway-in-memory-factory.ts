@@ -4,11 +4,12 @@ import InMemoryFreightGateway from "../gateway/in-memory-freight-gateway";
 
 export class GatewayInMemoryFactory  implements GatewayFactory {
   catalogGateway: InMemoryCatalogGateway = new  InMemoryCatalogGateway();
+  freightGateway: InMemoryFreightGateway = new  InMemoryFreightGateway();
   createCatalogGateway(): InMemoryCatalogGateway {
     return this.catalogGateway
   }
   createFreightGateway(): InMemoryFreightGateway {
-    return new InMemoryFreightGateway()
+    return this.freightGateway
   }
 
 }
