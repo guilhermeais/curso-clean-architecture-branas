@@ -6,7 +6,9 @@ export class Product {
     public width: number,
     public height: number,
     public length: number,
-    public weight: number
+    public weight: number,
+    public _volume: number = 0,
+    public _density: number = 0
   ) {
     if (width < 0 || height < 0 || length < 0) {
       throw new Error('Invalid dimensions')
@@ -15,7 +17,6 @@ export class Product {
     if (weight < 0) {
       throw new Error('Invalid weight')
     }
-
   }
 
   get volume(): number {

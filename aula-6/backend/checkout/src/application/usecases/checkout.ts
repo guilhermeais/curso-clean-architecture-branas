@@ -5,25 +5,28 @@ import { FreightCalculator } from '../../domain/entities/freight-calculator'
 import { Order } from '../../domain/entities/order.entity'
 import RepositoryFactory from '../protocols/repositories/repository-factory'
 import { UseCase } from './usecase'
+import GatewayFactory from '../gateway/gateway-factory'
+import { CatalogGateway } from '../gateway/catalog-gateway'
 
 export class Checkout implements UseCase<Checkout.Input, Checkout.Output> {
-  private readonly productRepository: ProductsRepository
-    private readonly couponRepository: CouponsRepository
-    private readonly orderRepository: OrderRepository
-    
+  private readonly couponRepository: CouponsRepository
+  private readonly orderRepository: OrderRepository
+  private readonly catalogGateway: CatalogGateway
+
   constructor(
-    repositoryFactory: RepositoryFactory
+    repositoryFactory: RepositoryFactory,
+    gatewayFactory: GatewayFactory
   ) {
-    this.productRepository = repositoryFactory.createProductsRepository()
     this.couponRepository = repositoryFactory.createCouponsRepository()
     this.orderRepository = repositoryFactory.createOrderRepository()
+    this.catalogGateway = gatewayFactory.createCatalogGateway()
   }
 
   async execute(input: Checkout.Input): Promise<Checkout.Output> {
     const sequence = (await this.orderRepository.countAll()) + 1
     const order = new Order(input.orderId, input.cpf, input.date, sequence)
     for (const item of input.items) {
-      const product = await this.productRepository.getProduct(
+      const product = await this.catalogGateway.getProduct(
         item.productId.toString()
       )
 
