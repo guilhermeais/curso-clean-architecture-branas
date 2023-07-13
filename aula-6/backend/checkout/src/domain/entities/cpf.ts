@@ -1,3 +1,4 @@
+// value object
 export class CPF {
   readonly value: string
   constructor(unsafeCPF: string) {

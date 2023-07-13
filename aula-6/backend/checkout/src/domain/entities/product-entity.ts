@@ -1,3 +1,4 @@
+// entity
 export class Product {
   constructor(
     public id: string | number,

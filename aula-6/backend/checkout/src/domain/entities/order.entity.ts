@@ -3,11 +3,14 @@ import { CPF } from './cpf'
 import { Item } from './item.entity'
 import { Product } from './product-entity'
 import { Coupom } from './coupon.entity'
+import OrderCode from './order-code'
 
+// Entity
 export class Order {
   readonly cpf: CPF
   readonly items: Item[]
   readonly code: string
+  readonly orderCode: OrderCode
   freight: number = 0
   private coupon: Coupom | null = null
 
@@ -19,7 +22,8 @@ export class Order {
   ) {
     this.cpf = new CPF(cpf)
     this.items = []
-    this.code = `${date.getFullYear()}${sequence.toString().padStart(8, '0')}`
+    this.orderCode = new OrderCode(date, sequence)
+    this.code = this.orderCode.value
   }
 
   get total(): number {
