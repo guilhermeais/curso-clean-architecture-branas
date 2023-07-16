@@ -1,5 +1,5 @@
 import { HttpServer } from "./http-server";
-import { UseCaseFactory } from "../factories/usecase-factory";
+import { UseCaseFactory } from "../factory/usecase-factory";
 
 /**
  * Interface adapter

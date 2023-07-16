@@ -1,5 +1,8 @@
 import Coord from "./coord";
 
+/**
+ * Domain Service
+ */
 export default class DistanceCalculator {
   static calculate(from: Coord, to: Coord) {
     if (from.lat == to.lat && from.long == to.long) return 0;
