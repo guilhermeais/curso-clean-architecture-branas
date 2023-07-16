@@ -1,5 +1,5 @@
 import { Checkout } from './application/usecases/checkout'
-import { InMemoryRepositoryFactory } from './infra/factories/in-memory-repository-factory'
+import { InMemoryRepositoryFactory } from './infra/factory/in-memory-repository-factory'
 
 export enum Commands {
   SET_CPF = 'set-cpf',
