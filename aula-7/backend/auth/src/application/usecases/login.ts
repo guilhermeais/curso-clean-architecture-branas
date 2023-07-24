@@ -12,27 +12,27 @@ export default class Login implements UseCase<Login.Input, Login.Result> {
 
     const user = await this.userRepo.getByEmail(email)
 
-    if (user) {
-      const hashedInputPassword = pbkdf2Sync(
-        inputPassword,
-        user.salt,
-        64,
-        100,
-        'sha512'
-      ).toString('hex')
+    if (!user) {
+      throw new Error('User not found.')
+    }
 
-      if (user.password === hashedInputPassword) {
-        const token = sign({ email: user.email }, 'secret', {
-          expiresIn: '1 day',
-        })
+    const hashedInputPassword = pbkdf2Sync(
+      inputPassword,
+      user.salt,
+      64,
+      100,
+      'sha512'
+    ).toString('hex')
 
-        return { token }
-      }
-
+    if (user.password !== hashedInputPassword) {
       throw new Error('Invalid user password.')
     }
 
-    throw new Error('User not found.')
+    const token = sign({ email: user.email.value }, 'secret', {
+      expiresIn: '1 day',
+    })
+
+    return { token }
   }
 }
 
