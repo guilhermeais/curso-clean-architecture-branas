@@ -9,7 +9,7 @@ export default class InMemoryUserRepository implements UserRepository {
   }
 
   async getByEmail(email: string): Promise<User|null> {
-    const user = this.users.find(user => user.email === email)
+    const user = this.users.find(user => user.email.value === email)
 
     return user || null
   }
