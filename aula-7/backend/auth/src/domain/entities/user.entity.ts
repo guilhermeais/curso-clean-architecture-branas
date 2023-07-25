@@ -1,14 +1,21 @@
 import { pbkdf2Sync, randomBytes } from 'crypto'
 import Email from './email'
+import Password from './password'
 
+/**
+ * AG -> Aggregate Root
+ */
 export default class User {
   email: Email
-  private constructor(
-    email: string,
-    readonly password: string,
-    readonly salt: string
-  ) {
+  private _password: Password
+
+  private constructor(email: string, password: Password) {
     this.email = new Email(email)
+    this._password = password
+  }
+
+  get password() {
+    return this._password
   }
 
   /**
@@ -16,16 +23,7 @@ export default class User {
    * @description static factory method
    */
   static create(email: string, password: string) {
-    const salt = randomBytes(20).toString('hex')
-    const hashedPassword = pbkdf2Sync(
-      password,
-      salt,
-      64,
-      100,
-      'sha512'
-    ).toString('hex')
-
-    return new User(email, hashedPassword, salt)
+    return new User(email, Password.create(password))
   }
 
   /**
@@ -33,6 +31,14 @@ export default class User {
    * @description static factory method
    */
   static restore(email: string, hashedPassword: string, salt: string) {
-    return new User(email, hashedPassword, salt)
+    return new User(email, Password.restore(hashedPassword, salt))
+  }
+
+  validatePassword(password: string) {
+    return this.password.validate(password)
+  }
+
+  updatePassword(password: string) {
+    this._password = Password.create(password)
   }
 }
