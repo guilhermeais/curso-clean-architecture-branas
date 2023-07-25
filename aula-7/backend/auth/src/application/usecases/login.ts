@@ -2,6 +2,7 @@ import { pbkdf2Sync } from 'crypto'
 import { UseCase } from './usecase'
 import UserRepository from '../protocols/repositories/user-repository'
 import { sign } from 'jsonwebtoken'
+import TokenGenerator from '../../domain/entities/token-generator'
 
 export default class Login implements UseCase<Login.Input, Login.Result> {
   constructor(private readonly userRepo: UserRepository) {}
@@ -16,21 +17,12 @@ export default class Login implements UseCase<Login.Input, Login.Result> {
       throw new Error('User not found.')
     }
 
-    const hashedInputPassword = pbkdf2Sync(
-      inputPassword,
-      user.salt,
-      64,
-      100,
-      'sha512'
-    ).toString('hex')
-
-    if (user.password !== hashedInputPassword) {
+    if (!user.validatePassword(inputPassword)) {
       throw new Error('Invalid user password.')
     }
+    const tokenGenerator = new TokenGenerator('secret')
 
-    const token = sign({ email: user.email.value }, 'secret', {
-      expiresIn: '1 day',
-    })
+    const token = tokenGenerator.sign(user)
 
     return { token }
   }
