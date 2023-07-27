@@ -8,7 +8,7 @@ export default class SignUp implements UseCase<SignUp.Input, any> {
     const email = params.email.toLowerCase()
     const inputPassword = params.password
 
-    const user = User.create(email, inputPassword)
+    const user = User.create(email, inputPassword, 'pbkdf2')
     await this.userRepo.save(user)
   }
 }

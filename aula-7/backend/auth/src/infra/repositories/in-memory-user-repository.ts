@@ -11,6 +11,6 @@ export default class InMemoryUserRepository implements UserRepository {
   async getByEmail(email: string): Promise<User | null> {
     const user = this.users.find(user => user.email.value === email)
     if (!user) return null
-    return User.restore(user.email.value, user.password.value, user.password.salt)
+    return User.restore(user.email.value, user.password.value, user.password.salt!, user.passwordType)
   }
 }
