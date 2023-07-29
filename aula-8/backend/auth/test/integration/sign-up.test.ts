@@ -7,8 +7,9 @@ let sut: SignUp
 let userRepo: InMemoryUserRepository
 let login: Login
 
+const actualDate = new Date(2022, 0, 1)
 beforeEach(() => {
-  MockDate.set(new Date())
+  MockDate.set(actualDate)
   userRepo = new InMemoryUserRepository()
   sut = new SignUp(userRepo)
   login = new Login(userRepo)
