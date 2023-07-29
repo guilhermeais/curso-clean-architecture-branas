@@ -1,4 +1,4 @@
-import { CatalogGateway } from '../../application/gateway/catalog-gateway'
+import { CatalogGateway } from '../../application/protocols/gateway/catalog-gateway'
 import { Product } from '../../domain/entities/product-entity'
 
 export default class InMemoryCatalogGateway implements CatalogGateway {

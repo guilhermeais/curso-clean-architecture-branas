@@ -1,23 +1,44 @@
 import { Checkout } from '../../application/usecases/checkout'
 import GetOrder from '../../application/usecases/get-order'
 import { GetProducts } from '../../application/usecases/get-products'
-import RepositoryFactory from '../../application/protocols/repositories/repository-factory'
-import GatewayFactory from '../../application/gateway/gateway-factory'
+import RepositoryFactory from '../../application/protocols/factories/repository-factory'
+import GatewayFactory from '../../application/protocols/factories/gateway-factory'
+import AuthDecorator from '../../application/decorator/auth-decorator'
 
 export class UseCaseFactory {
+  private repositoryFactory: RepositoryFactory
+  private gatewayFactory: GatewayFactory
   constructor(
-    readonly repositoryFactory: RepositoryFactory,
-    private gatewayFactory: GatewayFactory
-  ) {}
-  createCheckout(): Checkout {
-    return new Checkout(this.repositoryFactory, this.gatewayFactory)
+    repositoryFactory: RepositoryFactory,
+    gatewayFactory: GatewayFactory
+  ) {
+    this.repositoryFactory = repositoryFactory
+    this.gatewayFactory = gatewayFactory
+  }
+
+  setRepositoryFactory(repositoryFactory: RepositoryFactory) {
+    this.repositoryFactory = repositoryFactory
+  }
+
+  setGatewayFactory(gatewayFactory: GatewayFactory) {
+    this.gatewayFactory = gatewayFactory
+  }
+
+  createCheckout(): AuthDecorator<Checkout> {
+    return new AuthDecorator(
+      new Checkout(this.repositoryFactory, this.gatewayFactory),
+      this.gatewayFactory
+    )
   }
 
   createGetProducts(): GetProducts {
     return new GetProducts(this.repositoryFactory)
   }
 
-  createGetOrder(): GetOrder {
-    return new GetOrder(this.repositoryFactory)
+  createGetOrder(): AuthDecorator<GetOrder> {
+    return new AuthDecorator(
+      new GetOrder(this.repositoryFactory),
+      this.gatewayFactory
+    )
   }
 }

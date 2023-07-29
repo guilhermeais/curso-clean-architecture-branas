@@ -1,11 +1,11 @@
 import CouponsRepository from '../protocols/repositories/coupons-repository'
 import OrderRepository from '../protocols/repositories/order-repository'
 import { Order } from '../../domain/entities/order.entity'
-import RepositoryFactory from '../protocols/repositories/repository-factory'
+import RepositoryFactory from '../protocols/factories/repository-factory'
 import { UseCase } from './usecase'
-import GatewayFactory from '../gateway/gateway-factory'
-import { CatalogGateway } from '../gateway/catalog-gateway'
-import FreightGateway, { Input } from '../gateway/freight-gateway'
+import GatewayFactory from '../protocols/factories/gateway-factory'
+import { CatalogGateway } from '../protocols/gateway/catalog-gateway'
+import FreightGateway, { Input } from '../protocols/gateway/freight-gateway'
 
 export class Checkout implements UseCase<Checkout.Input, Checkout.Output> {
   private readonly couponRepository: CouponsRepository

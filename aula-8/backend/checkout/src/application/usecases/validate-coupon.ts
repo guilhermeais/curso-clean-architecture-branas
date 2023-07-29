@@ -1,5 +1,5 @@
 import CouponsRepository from '../protocols/repositories/coupons-repository'
-import RepositoryFactory from '../protocols/repositories/repository-factory'
+import RepositoryFactory from '../protocols/factories/repository-factory'
 
 export default class ValidateCoupon {
   private readonly couponRepository: CouponsRepository

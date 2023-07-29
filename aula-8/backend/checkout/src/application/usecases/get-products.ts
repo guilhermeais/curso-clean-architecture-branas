@@ -1,6 +1,6 @@
 import { Product } from "../../domain/entities/product-entity";
 import ProductsRepository from "../protocols/repositories/products-repository";
-import RepositoryFactory from "../protocols/repositories/repository-factory";
+import RepositoryFactory from "../protocols/factories/repository-factory";
 import { UseCase } from "./usecase";
 
 export class GetProducts implements UseCase<null, Product[]> {

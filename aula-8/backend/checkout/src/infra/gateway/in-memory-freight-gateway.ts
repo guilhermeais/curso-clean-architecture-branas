@@ -1,7 +1,7 @@
 import FreightGateway, {
   Input,
   Output,
-} from '../../application/gateway/freight-gateway'
+} from '../../application/protocols/gateway/freight-gateway'
 
 export default class InMemoryFreightGateway implements FreightGateway {
   result: Output = {

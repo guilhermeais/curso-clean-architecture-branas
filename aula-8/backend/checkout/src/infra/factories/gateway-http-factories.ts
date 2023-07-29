@@ -1,15 +1,19 @@
-import { CatalogGateway } from '../../application/gateway/catalog-gateway'
-import FreightGateway from '../../application/gateway/freight-gateway'
-import GatewayFactory from '../../application/gateway/gateway-factory'
+import { CatalogGateway } from '../../application/protocols/gateway/catalog-gateway'
+import FreightGateway from '../../application/protocols/gateway/freight-gateway'
+import GatewayFactory from '../../application/protocols/factories/gateway-factory'
 import CatalogHttpGateway from '../gateway/catalog-http-gateway'
 import FreightHttpGateway from '../gateway/freight-http-gateway'
 import HttpClient from '../http/http-client'
+import AuthGateway from '../../application/protocols/gateway/auth-gateway'
+import AuthHttpGateway from '../gateway/auth-http-gateway'
 
 export default class GatewayHttpFactory implements GatewayFactory {
   constructor(private readonly httpClient: HttpClient) {}
-
+  createAuthGateway(): AuthGateway {
+    return new AuthHttpGateway(this.httpClient)
+  }
   createCatalogGateway(): CatalogGateway {
-    return new CatalogHttpGateway(this.httpClient);
+    return new CatalogHttpGateway(this.httpClient)
   }
   createFreightGateway(): FreightGateway {
     return new FreightHttpGateway(this.httpClient)

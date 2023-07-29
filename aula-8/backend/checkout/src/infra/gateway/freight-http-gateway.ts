@@ -1,7 +1,7 @@
 import FreightGateway, {
   Input,
   Output,
-} from '../../application/gateway/freight-gateway'
+} from '../../application/protocols/gateway/freight-gateway'
 import HttpClient from '../http/http-client'
 
 export default class FreightHttpGateway implements FreightGateway {
