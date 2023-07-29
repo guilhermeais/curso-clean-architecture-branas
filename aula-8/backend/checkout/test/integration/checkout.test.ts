@@ -42,7 +42,7 @@ test('Não deve criar pedido com CPF inválido', async () => {
     items: [],
   }
 
-  const output =  checkout.execute(given)
+  const output = checkout.execute(given)
 
   await expect(output).rejects.toThrowError('Invalid CPF')
 })
@@ -218,7 +218,7 @@ test('Deve fazer um pedido e obter o pedido salvo', async () => {
 
   await checkout.execute(given)
 
-  const savedOrder = await getOrder.execute(orderId)
+  const savedOrder = await getOrder.execute({ id: orderId })
   expect(savedOrder.total).toEqual(120)
 })
 
@@ -239,7 +239,7 @@ test('Deve fazer um pedido e gerar o código do pedido', async () => {
   }
 
   await checkout.execute(given)
-  const savedOrder = await getOrder.execute(orderId)
+  const savedOrder = await getOrder.execute({ id: orderId })
   expect(savedOrder.code).toBe('202300000001')
 })
 
@@ -277,8 +277,8 @@ test('Deve fazer dois pedidos e gerar o código do pedido', async () => {
 
   await checkout.execute(firestGiven)
   await checkout.execute(secondGiven)
-  const firstOrder = await getOrder.execute(firstOrderId)
-  const secondOrder = await getOrder.execute(secondOrderId)
+  const firstOrder = await getOrder.execute({ id: firstOrderId })
+  const secondOrder = await getOrder.execute({ id: secondOrderId })
 
   expect(firstOrder.code).toBe('202300000001')
   expect(secondOrder.code).toBe('202300000002')
