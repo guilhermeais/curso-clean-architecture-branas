@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
 import User from './user.entity'
 
 export default class TokenGenerator {
@@ -8,5 +8,9 @@ export default class TokenGenerator {
     return sign({ email: user.email.value }, this.secret, {
       expiresIn: '1 day',
     })
+  }
+
+  verify(token: string): any {
+    return verify(token, this.secret)
   }
 }
