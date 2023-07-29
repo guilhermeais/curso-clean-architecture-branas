@@ -1,6 +1,6 @@
 export default class StockEntry {
   constructor(
-    private readonly _idProduct: number,
+    private readonly _idProduct: string,
     private readonly _operation: 'in' | 'out',
     private readonly _qty: number
   ) {
