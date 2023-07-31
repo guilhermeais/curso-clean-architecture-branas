@@ -19,5 +19,9 @@ module.exports = {
       name: 'freight',
       script: 'cd ../backend/freight && npm start',
     },
+    {
+      name: 'stock',
+      script: 'cd ../backend/stock && npm start',
+    },
   ],
 }

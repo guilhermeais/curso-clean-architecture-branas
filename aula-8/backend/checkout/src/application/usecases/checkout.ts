@@ -6,12 +6,14 @@ import { UseCase } from './usecase'
 import GatewayFactory from '../protocols/factories/gateway-factory'
 import { CatalogGateway } from '../protocols/gateway/catalog-gateway'
 import FreightGateway, { Input } from '../protocols/gateway/freight-gateway'
+import { StockGateway } from '../protocols/gateway/stock-gateway'
 
 export class Checkout implements UseCase<Checkout.Input, Checkout.Output> {
   private readonly couponRepository: CouponsRepository
   private readonly orderRepository: OrderRepository
   private readonly catalogGateway: CatalogGateway
   private readonly freightGateway: FreightGateway
+  private readonly stockGateway: StockGateway
 
   constructor(
     repositoryFactory: RepositoryFactory,
@@ -21,6 +23,7 @@ export class Checkout implements UseCase<Checkout.Input, Checkout.Output> {
     this.orderRepository = repositoryFactory.createOrderRepository()
     this.catalogGateway = gatewayFactory.createCatalogGateway()
     this.freightGateway = gatewayFactory.createFreightGateway()
+    this.stockGateway = gatewayFactory.createStockGateway()
   }
 
   async execute(input: Checkout.Input): Promise<Checkout.Output> {
@@ -59,7 +62,16 @@ export class Checkout implements UseCase<Checkout.Input, Checkout.Output> {
         order.addCoupon(coupon)
       }
     }
+
     await this.orderRepository.save(order)
+    await this.stockGateway.decreaseStock({
+       items: order.items.map(item => {
+        return {
+          idProduct: item.productId,
+          quantity: item.quantity
+        }
+       }),
+    })
 
     return {
       orderId: order.id,
