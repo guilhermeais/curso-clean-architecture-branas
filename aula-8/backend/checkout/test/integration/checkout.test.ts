@@ -7,15 +7,22 @@ import OrderRepositoryInMemory from '../../src/infra/repositories/order-reposito
 import { InMemoryRepositoryFactory } from '../../src/infra/factories/in-memory-repository-factory'
 import { GatewayInMemoryFactory } from '../../src/infra/factories/gateway-in-memory-factory'
 import { Product } from '../../src/domain/entities/product-entity'
+import Queue from '../../src/application/protocols/queue/queue'
 
 let checkout: Checkout
 let getOrder: GetOrder
 let repositoryFactory: InMemoryRepositoryFactory
 let gatewayFactory: GatewayInMemoryFactory
+let queue: Queue
 
 beforeEach(() => {
   gatewayFactory = new GatewayInMemoryFactory()
   repositoryFactory = new InMemoryRepositoryFactory()
+  queue = {
+    connect: jest.fn(),
+    on: jest.fn(),
+    publish: jest.fn()
+  }
   gatewayFactory.catalogGateway.products = new Map<string, Product>([
     ['1', new Product('1', 'A', 150, 100, 30, 10, 3)],
     ['2', new Product('2', 'B', 100, 50, 50, 50, 22)],
@@ -32,7 +39,7 @@ beforeEach(() => {
 
   repositoryFactory.orderRepository = new OrderRepositoryInMemory()
 
-  checkout = new Checkout(repositoryFactory, gatewayFactory)
+  checkout = new Checkout(repositoryFactory, gatewayFactory, queue)
   getOrder = new GetOrder(repositoryFactory)
 })
 

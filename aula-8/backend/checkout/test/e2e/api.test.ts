@@ -1,18 +1,26 @@
 import supertest from 'supertest'
-import httpController from '../../src/app'
+import createApp from '../../src/app'
 import { InMemoryRepositoryFactory } from '../../src/infra/factories/in-memory-repository-factory'
 import { Product } from '../../src/domain/entities/product-entity'
 import { GatewayInMemoryFactory } from '../../src/infra/factories/gateway-in-memory-factory'
 import { CouponRepositoryInMemory } from '../../src/infra/repositories/coupon-repository-in-memory'
 import { Coupom } from '../../src/domain/entities/coupon.entity'
-import OrderRepositoryInMemory from '../../src/infra/repositories/order-repository-in-memory'
 import { sign } from 'jsonwebtoken'
+import { HttpController } from '../../src/infra/http/http-controller'
+import Queue from '../../src/application/protocols/queue/queue'
 
 let request: supertest.SuperTest<supertest.Test>
 let repositoryFactory: InMemoryRepositoryFactory
 let gatewayFactory: GatewayInMemoryFactory
+let httpController: HttpController
+let queue: Queue
 
-beforeEach(() => {
+beforeEach(async () => {
+  queue = {
+    connect: jest.fn(),
+    on: jest.fn(),
+    publish: jest.fn()
+  }
   repositoryFactory = new InMemoryRepositoryFactory()
   gatewayFactory = new GatewayInMemoryFactory()
 
@@ -29,6 +37,8 @@ beforeEach(() => {
     ['VALE20', new Coupom('VALE20', 20, tomorrow)],
     ['VALE10', new Coupom('VALE10', 10, yesterday)],
   ])
+
+  httpController = await createApp(queue)
 
   httpController.useCaseFactory.setRepositoryFactory(repositoryFactory)
   httpController.useCaseFactory.setGatewayFactory(gatewayFactory)
